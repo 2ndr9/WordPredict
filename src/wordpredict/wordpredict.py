@@ -22,9 +22,12 @@ class WordPredict:
         - List of candidates, e.g., ['help', 'held', 'felt', 'hell', 'hello', 'helps']
         """
 
-        self.valid_prefixes = update_new_valid_prefixes(
-            self.valid_prefixes, new_char_list, self.prefix_and_its_word_and_prob_tuples
-        )
+        if len(new_char_list) > 0:
+            self.valid_prefixes = update_valid_prefixes(
+                self.valid_prefixes,
+                new_char_list,
+                self.prefix_and_its_word_and_prob_tuples,
+            )
 
         return get_autocomplete_candidates(
             self.prefix_and_its_word_and_prob_tuples,
@@ -35,6 +38,18 @@ class WordPredict:
     def reset(self):
         """Resets the list of valid prefixes."""
         self.valid_prefixes = []
+
+    def get_current_candidates(self, max_candidates=6):
+        """
+        Returns the current candidates.
+
+        You can use when you don't want to UPDATE but only GET
+        """
+        return get_autocomplete_candidates(
+            self.prefix_and_its_word_and_prob_tuples,
+            self.valid_prefixes,
+            max_candidates,
+        )
 
 
 # Helper functions
@@ -63,7 +78,7 @@ def generate_prefix_and_its_word_and_prob_tuples(
     return prefix_and_its_word_and_prob_tuples
 
 
-def update_new_valid_prefixes(
+def update_valid_prefixes(
     old_valid_prefixes: list[str],
     new_char_list: list[str],
     prefix_and_its_word_and_prob_tuples: dict[str, list[tuple[str, float]]],
