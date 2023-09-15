@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wordpredict"
-version = "0.1.1"
+version = "0.1.2"
 description = "word predictor"
 authors = ["2ndr9"]
 repository = "https://github.com/2ndr9/wordpredict"
