@@ -1,11 +1,10 @@
 import heapq
 import itertools as it
 from collections import defaultdict
-from typing import Dict, List, Tuple
 
 
 class WordPredict:
-    def __init__(self, corpus_words: List[str], corpus_freq: List[int], alpha=0.62):
+    def __init__(self, corpus_words: list[str], corpus_freq: list[int], alpha=0.62):
         self.valid_prefixes = []
 
         self.prefix_and_its_word_and_prob_tuples = (
@@ -14,7 +13,7 @@ class WordPredict:
             )
         )
 
-    def update(self, new_char_list: List[str], max_candidates=6):
+    def update(self, new_char_list: list[str], max_candidates=6):
         """
         Params:
         - new_char_list: List of new characters, e.g., ['a', 'b', 'c']
@@ -42,11 +41,11 @@ class WordPredict:
 
 
 def generate_prefix_and_its_word_and_prob_tuples(
-    corpus_words: List[str], corpus_freq: List[int], alpha: float
+    corpus_words: list[str], corpus_freq: list[int], alpha: float
 ):
     word_freq = dict(zip(corpus_words, corpus_freq))
-    prefix_and_its_word_and_prob_tuples: Dict[
-        str, List[Tuple[str, float]]
+    prefix_and_its_word_and_prob_tuples: dict[
+        str, list[tuple[str, float]]
     ] = defaultdict(list)
 
     for word, freq in word_freq.items():
@@ -65,9 +64,9 @@ def generate_prefix_and_its_word_and_prob_tuples(
 
 
 def update_new_valid_prefixes(
-    old_valid_prefixes: List[str],
-    new_char_list: List[str],
-    prefix_and_its_word_and_prob_tuples: Dict[str, List[Tuple[str, float]]],
+    old_valid_prefixes: list[str],
+    new_char_list: list[str],
+    prefix_and_its_word_and_prob_tuples: dict[str, list[tuple[str, float]]],
 ):
     new_prefixes = (
         new_char_list
@@ -86,8 +85,8 @@ def update_new_valid_prefixes(
 
 
 def get_autocomplete_candidates(
-    prefix_and_its_word_and_prob_tuples: Dict[str, List[Tuple[str, float]]],
-    valid_prefixes: List[str],
+    prefix_and_its_word_and_prob_tuples: dict[str, list[tuple[str, float]]],
+    valid_prefixes: list[str],
     max_candidates,
 ):
     word_and_prob_tuples = [
