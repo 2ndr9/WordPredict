@@ -1,1 +1,1 @@
-from wordpredict import WordPredict
+from .wordpredict import WordPredict
