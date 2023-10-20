@@ -1,14 +1,9 @@
-from wordpredict.utils import (
-    build_trie,
-    get_autocomplete_candidates,
-    update_valid_prefixes,
-)
-
-
 class WordPredict:
     def __init__(self, corpus_words: list[str], corpus_freq: list[int], alpha=0.62):
         self.valid_prefixes = []
-        self.root = build_trie(corpus_words, corpus_freq, alpha)
+        self.root = build_trie(corpus_words, corpus_freq)
+
+        self.alpha = alpha
 
     def update(self, new_char_list: list[str], max_candidates=6):
         if len(new_char_list) > 0:
@@ -22,6 +17,7 @@ class WordPredict:
             self.root,
             self.valid_prefixes,
             max_candidates,
+            self.alpha,
         )
 
     def reset(self):
@@ -36,4 +32,5 @@ class WordPredict:
             self.root,
             self.valid_prefixes,
             max_candidates,
+            self.alpha,
         )

@@ -3,10 +3,10 @@ class TrieNode:
         self.children: dict[str, "TrieNode"] = {}
 
         # only leaf nodes have this attribute
-        self.prob_and_word: tuple[float, str] | None = None
+        self.freq_and_word: tuple[float, str] | None = None
 
     def get_all_leaf_nodes(self) -> list["TrieNode"]:
-        leaf_nodes = [self] if self.prob_and_word else []
+        leaf_nodes = [self] if self.freq_and_word else []
 
         for child in self.children.values():
             leaf_nodes.extend(child.get_all_leaf_nodes())
@@ -14,9 +14,7 @@ class TrieNode:
         return leaf_nodes
 
 
-def build_trie(
-    corpus_words: list[str], corpus_freq: list[int], alpha: float
-) -> TrieNode:
+def build_trie(corpus_words: list[str], corpus_freq: list[int]) -> TrieNode:
     root = TrieNode()
     word_freq = dict(zip(corpus_words, corpus_freq))
 
@@ -26,8 +24,7 @@ def build_trie(
             node = node.children.setdefault(char, TrieNode())
 
             if i == len(word) - 1:  # leaf node
-                prob = (alpha ** (len(word) - i)) * freq
-                node.prob_and_word = (prob, word)
+                node.freq_and_word = (freq, word)
 
     return root
 
@@ -57,13 +54,26 @@ def update_valid_prefixes(
 
 
 def get_autocomplete_candidates(
-    root: TrieNode, valid_prefixes: list[str], max_candidates: int
+    root: TrieNode, valid_prefixes: list[str], max_candidates: int, alpha: float
 ) -> list[str]:
-    prob_and_word_list = [
-        leaf.prob_and_word
+    list_of_freq_and_word_tuple = [
+        leaf.freq_and_word
         for prefix in valid_prefixes
         for leaf in find_node_for_prefix(root, prefix).get_all_leaf_nodes()
     ]
 
-    prob_and_word_list.sort(key=lambda x: x[0], reverse=True)
-    return [item[1] for item in prob_and_word_list[:max_candidates]]
+    user_input_len = len(valid_prefixes[0])
+
+    alpha_applied = [
+        (apply_alpha_penalty(freq, len(word), user_input_len, alpha), word)
+        for freq, word in list_of_freq_and_word_tuple
+    ]
+
+    alpha_applied.sort(key=lambda x: x[0], reverse=True)
+    return [item[1] for item in alpha_applied[:max_candidates]]
+
+
+def apply_alpha_penalty(
+    freq: float, target_word_len: int, user_input_len: int, alpha: float
+) -> float:
+    return freq * (alpha ** (target_word_len - user_input_len))
