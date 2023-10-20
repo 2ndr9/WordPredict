@@ -1,3 +1,10 @@
+from wordpredict.utils import (
+    build_trie,
+    get_autocomplete_candidates,
+    update_valid_prefixes,
+)
+
+
 class WordPredict:
     def __init__(self, corpus_words: list[str], corpus_freq: list[int], alpha=0.62):
         self.valid_prefixes = []
